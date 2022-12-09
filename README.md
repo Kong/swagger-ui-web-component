@@ -6,7 +6,7 @@
 
 ---
 
-Note: This package currently requires linking of the `universal` branch `https://github.com/Kong/swagger-ui-kong-theme`.
+Note: This package currently requires linking the [swagger-ui-kong-theme](https://github.com/Kong/swagger-ui-kong-theme) package locally.
 
 1. Clone the `swagger-ui-kong-theme` repository and switch branch to `universal`
 2. Run `yarn && yarn build && yarn link`

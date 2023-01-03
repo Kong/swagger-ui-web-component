@@ -1,3 +1,5 @@
 import { register } from './register'
 
-register()
+export default {
+  register
+}

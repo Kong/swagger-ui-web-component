@@ -7,7 +7,6 @@
     "url": "https://konghq.com"
   },
   "license": "Apache-2.0",
-  "private": true,
   "scripts": {
     "start": "webpack serve",
     "build": "webpack --mode production"

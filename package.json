@@ -1,12 +1,12 @@
 {
   "name": "@kong/swagger-ui-web-component",
   "version": "1.0.1",
-  "main": "index.js",
   "author": {
     "name": "Kong Inc.",
     "url": "https://konghq.com"
   },
   "license": "Apache-2.0",
+  "main": "dist/main.js",
   "scripts": {
     "start": "webpack serve",
     "build": "webpack --mode production"

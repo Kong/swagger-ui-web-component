@@ -29,6 +29,11 @@ export class SwaggerUIElement extends HTMLElement {
   #hasSidebar = true
 
   /**
+   * Should SwaggerUI hide schemes, actions, etc
+   */
+  #essentialsOnly = false
+
+  /**
    * SwaggerUI instance
    * @type {object}
    */
@@ -40,6 +45,16 @@ export class SwaggerUIElement extends HTMLElement {
     this.rootElement = document.createElement('div')
 
     this.attachShadow({ mode: 'open' })
+    if (!this.essentialsOnly) {
+      this.shadowRoot.innerHTML = `
+        <style>
+          .info-augment-wrapper,
+          .swagger-ui section {
+            display: none !important;
+          }
+        </style>
+      `;
+    }
     this.shadowRoot.appendChild(this.rootElement)
 
     // load styles
@@ -63,6 +78,9 @@ export class SwaggerUIElement extends HTMLElement {
         break
       case 'has-sidebar':
         this.hasSidebar = newValue
+        break
+      case 'essentials-only':
+        this.essentialsOnly = newValue
         break
     }
   }
@@ -123,6 +141,14 @@ export class SwaggerUIElement extends HTMLElement {
     this.#hasSidebar = attributeValueToBoolean(hasSidebar)
   }
 
+  get essentialsOnly() {
+    return this.#essentialsOnly
+  }
+
+  set essentialsOnly(essentialsOnly) {
+    this.#essentialsOnly = attributeValueToBoolean(essentialsOnly)
+  }
+
   get spec() {
     return this.#spec
   }
@@ -156,6 +182,6 @@ export class SwaggerUIElement extends HTMLElement {
   }
 
   static get observedAttributes() {
-    return ['url', 'spec', 'auto-init', 'has-sidebar']
+    return ['url', 'spec', 'auto-init', 'has-sidebar', 'essentials-only']
   }
 }

@@ -45,7 +45,7 @@ export class SwaggerUIElement extends HTMLElement {
     this.rootElement = document.createElement('div')
 
     this.attachShadow({ mode: 'open' })
-    if (!this.essentialsOnly) {
+    if (this.essentialsOnly) {
       this.shadowRoot.innerHTML = `
         <style>
           .info-augment-wrapper,

@@ -3,6 +3,14 @@ import { SwaggerUIKongTheme } from '@kong/swagger-ui-kong-theme'
 import kongThemeStyles from '@kong/swagger-ui-kong-theme/dist/main.css'
 import { attributeValueToBoolean } from './utils'
 
+const essentialsOnlyStyles = `
+/* hide non-essential sections */
+.info-augment-wrapper,
+.swagger-ui section {
+  display: none !important;
+}
+`
+
 export class SwaggerUIElement extends HTMLElement {
   /**
    * Should SwaggerUI be automatically initialized after connecting?
@@ -29,7 +37,8 @@ export class SwaggerUIElement extends HTMLElement {
   #hasSidebar = true
 
   /**
-   * Should SwaggerUI hide schemes, actions, etc
+   * Should SwaggerUI show schemes, actions, etc
+   * @type {boolean}
    */
   #essentialsOnly = false
 
@@ -45,16 +54,6 @@ export class SwaggerUIElement extends HTMLElement {
     this.rootElement = document.createElement('div')
 
     this.attachShadow({ mode: 'open' })
-    if (this.essentialsOnly) {
-      this.shadowRoot.innerHTML = `
-        <style>
-          .info-augment-wrapper,
-          .swagger-ui section {
-            display: none !important;
-          }
-        </style>
-      `;
-    }
     this.shadowRoot.appendChild(this.rootElement)
 
     // load styles
@@ -102,6 +101,14 @@ export class SwaggerUIElement extends HTMLElement {
 
     if (!this.#url && !this.#spec) {
       throw new Error('either `spec` or `url` has to be set to initialize SwaggerUI')
+    }
+
+    // hide non-essential sections
+    if (this.#essentialsOnly) {
+      const styleTag = document.createElement('style')
+      styleTag.innerHTML = essentialsOnlyStyles
+      styleTag.setAttribute('data-testid', 'hide-essentials-styles')
+      this.shadowRoot.appendChild(styleTag)
     }
 
     this.#instance = SwaggerUI({

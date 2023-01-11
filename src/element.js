@@ -1,6 +1,7 @@
 import SwaggerUI from 'swagger-ui'
 import { SwaggerUIKongTheme } from '@kong/swagger-ui-kong-theme'
-import kongThemeStyles from '@kong/swagger-ui-kong-theme/dist/main.css'
+// TODO: if adding inline doesn't fix load of styles remove
+import kongThemeStyles from '@kong/swagger-ui-kong-theme/dist/main.css?inline'
 import { attributeValueToBoolean } from './utils'
 
 const essentialsOnlyStyles = `
@@ -8,6 +9,21 @@ const essentialsOnlyStyles = `
 .info-augment-wrapper,
 .swagger-ui section {
   display: none !important;
+}
+`
+
+const slimModeStyles = `
+/* slim mode styles */
+.swagger-ui .opblock .opblock-summary-description {
+  display: none;
+}
+
+.swagger-ui .opblock-tag {
+  font-size: 16px;
+}
+
+.swagger-ui .opblock .opblock-summary .arrow {
+  margin-left: auto;
 }
 `
 
@@ -41,6 +57,13 @@ export class SwaggerUIElement extends HTMLElement {
    * @type {boolean}
    */
   #essentialsOnly = false
+
+  /**
+   * Slim styles for display in compressed places. Hides descriptions,
+   * decrease font size of headings
+   * @type {boolean}
+   */
+  #slimMode = false
 
   /**
    * SwaggerUI instance
@@ -81,6 +104,9 @@ export class SwaggerUIElement extends HTMLElement {
       case 'essentials-only':
         this.essentialsOnly = newValue
         break
+      case 'slim-mode':
+        this.slimMode = newValue
+        break
     }
   }
 
@@ -108,6 +134,14 @@ export class SwaggerUIElement extends HTMLElement {
       const styleTag = document.createElement('style')
       styleTag.innerHTML = essentialsOnlyStyles
       styleTag.setAttribute('data-testid', 'hide-essentials-styles')
+      this.shadowRoot.appendChild(styleTag)
+    }
+
+    // add slim styles
+    if (this.#slimMode) {
+      const styleTag = document.createElement('style')
+      styleTag.innerHTML = slimModeStyles
+      styleTag.setAttribute('data-testid', 'slim-mode-styles')
       this.shadowRoot.appendChild(styleTag)
     }
 
@@ -156,6 +190,14 @@ export class SwaggerUIElement extends HTMLElement {
     this.#essentialsOnly = attributeValueToBoolean(essentialsOnly)
   }
 
+  get slimMode() {
+    return this.#slimMode
+  }
+
+  set slimMode(slimMode) {
+    this.#slimMode = attributeValueToBoolean(slimMode)
+  }
+
   get spec() {
     return this.#spec
   }
@@ -189,6 +231,6 @@ export class SwaggerUIElement extends HTMLElement {
   }
 
   static get observedAttributes() {
-    return ['url', 'spec', 'auto-init', 'has-sidebar', 'essentials-only']
+    return ['url', 'spec', 'auto-init', 'has-sidebar', 'essentials-only', 'slim-mode']
   }
 }

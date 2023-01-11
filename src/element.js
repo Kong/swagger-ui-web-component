@@ -1,7 +1,6 @@
 import SwaggerUI from 'swagger-ui'
 import { SwaggerUIKongTheme } from '@kong/swagger-ui-kong-theme'
-// TODO: if adding inline doesn't fix load of styles remove
-import kongThemeStyles from '@kong/swagger-ui-kong-theme/dist/main.css?inline'
+import kongThemeStyles from '@kong/swagger-ui-kong-theme/dist/main.css'
 import { attributeValueToBoolean } from './utils'
 
 const essentialsOnlyStyles = `

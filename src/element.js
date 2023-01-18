@@ -1,8 +1,8 @@
 import SwaggerUI from 'swagger-ui'
 import { SwaggerUIKongTheme } from '@kong/swagger-ui-kong-theme'
-import kongThemeStyles from '@kong/swagger-ui-kong-theme/dist/main.css'
 import { attributeValueToBoolean } from './utils'
 
+const kongThemeStyles = require('!!raw-loader!@kong/swagger-ui-kong-theme/dist/main.css')
 const essentialsOnlyStyles = `
 /* hide non-essential sections */
 .info-augment-wrapper,
@@ -147,12 +147,11 @@ export class SwaggerUIElement extends HTMLElement {
       console.warn('For correct positioning, you must enable the sidebar with `has-sidebar="true"` and should only display essentials with `essentials-only="true"`')
     }
 
-    // load styles
-    // TODO: undo if this doesn't work
-    kongThemeStyles.use({ target: this.shadowRoot })
-   /*  const styleTag = document.createElement('style')
-    styleTag.innerHTML = kongThemeStyles.toString()
-    this.shadowRoot.appendChild(styleTag) */
+    // load base styles
+    const styleTag = document.createElement('style')
+    styleTag.innerHTML = kongThemeStyles.default
+    styleTag.setAttribute('data-testid', 'default-styles')
+    this.shadowRoot.appendChild(styleTag)
 
     // relatively position the sidebar if essentials only
     if (this.#hasSidebar && this.#essentialsOnly && this.#relativeSidebar) {

@@ -149,10 +149,10 @@ export class SwaggerUIElement extends HTMLElement {
 
     // load styles
     // TODO: undo if this doesn't work
-    //kongThemeStyles.use({ target: this.shadowRoot })
-    const styleTag = document.createElement('style')
+    kongThemeStyles.use({ target: this.shadowRoot })
+   /*  const styleTag = document.createElement('style')
     styleTag.innerHTML = kongThemeStyles.toString()
-    this.shadowRoot.appendChild(styleTag)
+    this.shadowRoot.appendChild(styleTag) */
 
     // relatively position the sidebar if essentials only
     if (this.#hasSidebar && this.#essentialsOnly && this.#relativeSidebar) {

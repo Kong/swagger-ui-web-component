@@ -151,7 +151,7 @@ export class SwaggerUIElement extends HTMLElement {
     // TODO: undo if this doesn't work
     //kongThemeStyles.use({ target: this.shadowRoot })
     const styleTag = document.createElement('style')
-    styleTag.innerHTML = kongThemeStyles // you may have to do something like kongThemeStyles.toString() - unsure
+    styleTag.innerHTML = kongThemeStyles.toString()
     this.shadowRoot.appendChild(styleTag)
 
     // relatively position the sidebar if essentials only

@@ -30,7 +30,7 @@ const relativeSidebarStyles = `
 /* relative sidebar styles */
 div#sidebar {
   position: relative;
-  top: -190px;
+  top: unset;
   left: unset;
 }
 `
@@ -151,7 +151,12 @@ export class SwaggerUIElement extends HTMLElement {
       throw new Error('either `spec` or `url` has to be set to initialize SwaggerUI')
     }
 
-    if (this.#hasSidebar && this.#relativeSidebar) {
+    if (this.relativeSidebar && !this.#hasSidebar || this.#relativeSidebar && !this.#essentialsOnly) {
+      console.warn('For correct positioning, you must enable the sidebar with `has-sidebar="true"` and should only display essentials with `essentials-only="true"`')
+    }
+
+    // relatively position the sidebar if essentials only
+    if (this.#hasSidebar && this.#essentialsOnly && this.#relativeSidebar) {
       const styleTag = document.createElement('style')
       styleTag.innerHTML = relativeSidebarStyles
       styleTag.setAttribute('data-testid', 'relative-sidebar-styles')

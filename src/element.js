@@ -26,6 +26,15 @@ const slimModeStyles = `
 }
 `
 
+const relativeSidebarStyles = `
+/* relative sidebar styles */
+div#sidebar {
+  position: relative;
+  top: -190px;
+  left: unset;
+}
+`
+
 export class SwaggerUIElement extends HTMLElement {
   /**
    * Should SwaggerUI be automatically initialized after connecting?
@@ -52,12 +61,18 @@ export class SwaggerUIElement extends HTMLElement {
   #hasSidebar = true
 
   /**
+   * Position the sidebar relatively instead of fixed
+   */
+  #relativeSidebar = false
+
+  /**
    * Should SwaggerUI show schemes, actions, etc
    * @type {boolean}
    */
   #essentialsOnly = false
 
   /**
+   * TODO: remove this when we have an alternate view for card size in VueSpecRenderer component
    * Slim styles for display in compressed places. Hides descriptions,
    * decrease font size of headings
    * @type {boolean}
@@ -76,10 +91,15 @@ export class SwaggerUIElement extends HTMLElement {
     this.rootElement = document.createElement('div')
 
     this.attachShadow({ mode: 'open' })
-    this.shadowRoot.appendChild(this.rootElement)
 
     // load styles
-    kongThemeStyles.use({ target: this.shadowRoot })
+    // TODO: undo if this doesn't work
+    //kongThemeStyles.use({ target: this.shadowRoot })
+    const styleTag = document.createElement('style')
+    styleTag.innerHTML = kongThemeStyles // you may have to do something like kongThemeStyles.toString() - unsure
+    this.shadowRoot.appendChild(styleTag)
+
+    this.shadowRoot.appendChild(this.rootElement)
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
@@ -99,6 +119,9 @@ export class SwaggerUIElement extends HTMLElement {
         break
       case 'has-sidebar':
         this.hasSidebar = newValue
+        break
+      case 'relative-sidebar':
+        this.relativeSidebar = newValue
         break
       case 'essentials-only':
         this.essentialsOnly = newValue
@@ -126,6 +149,13 @@ export class SwaggerUIElement extends HTMLElement {
 
     if (!this.#url && !this.#spec) {
       throw new Error('either `spec` or `url` has to be set to initialize SwaggerUI')
+    }
+
+    if (this.#hasSidebar && this.#relativeSidebar) {
+      const styleTag = document.createElement('style')
+      styleTag.innerHTML = relativeSidebarStyles
+      styleTag.setAttribute('data-testid', 'relative-sidebar-styles')
+      this.shadowRoot.appendChild(styleTag)
     }
 
     // hide non-essential sections
@@ -181,6 +211,14 @@ export class SwaggerUIElement extends HTMLElement {
     this.#hasSidebar = attributeValueToBoolean(hasSidebar)
   }
 
+  get relativeSidebar() {
+    return this.#relativeSidebar
+  }
+
+  set relativeSidebar(relativeSidebar) {
+    this.#relativeSidebar = attributeValueToBoolean(relativeSidebar)
+  }
+
   get essentialsOnly() {
     return this.#essentialsOnly
   }
@@ -230,6 +268,6 @@ export class SwaggerUIElement extends HTMLElement {
   }
 
   static get observedAttributes() {
-    return ['url', 'spec', 'auto-init', 'has-sidebar', 'essentials-only', 'slim-mode']
+    return ['url', 'spec', 'auto-init', 'has-sidebar', 'relative-sidebar', 'essentials-only', 'slim-mode']
   }
 }

@@ -91,14 +91,6 @@ export class SwaggerUIElement extends HTMLElement {
     this.rootElement = document.createElement('div')
 
     this.attachShadow({ mode: 'open' })
-
-    // load styles
-    // TODO: undo if this doesn't work
-    //kongThemeStyles.use({ target: this.shadowRoot })
-    const styleTag = document.createElement('style')
-    styleTag.innerHTML = kongThemeStyles // you may have to do something like kongThemeStyles.toString() - unsure
-    this.shadowRoot.appendChild(styleTag)
-
     this.shadowRoot.appendChild(this.rootElement)
   }
 
@@ -154,6 +146,13 @@ export class SwaggerUIElement extends HTMLElement {
     if (this.relativeSidebar && !this.#hasSidebar || this.#relativeSidebar && !this.#essentialsOnly) {
       console.warn('For correct positioning, you must enable the sidebar with `has-sidebar="true"` and should only display essentials with `essentials-only="true"`')
     }
+
+    // load styles
+    // TODO: undo if this doesn't work
+    //kongThemeStyles.use({ target: this.shadowRoot })
+    const styleTag = document.createElement('style')
+    styleTag.innerHTML = kongThemeStyles // you may have to do something like kongThemeStyles.toString() - unsure
+    this.shadowRoot.appendChild(styleTag)
 
     // relatively position the sidebar if essentials only
     if (this.#hasSidebar && this.#essentialsOnly && this.#relativeSidebar) {

@@ -4,25 +4,22 @@ import { attributeValueToBoolean } from './utils'
 
 const kongThemeStyles = require('!!raw-loader!@kong/swagger-ui-kong-theme/dist/main.css')
 const essentialsOnlyStyles = `
-/* hide non-essential sections */
+/* hide non-essential sections & features */
 .info-augment-wrapper,
-.swagger-ui section {
+.swagger-ui section,
+.swagger-ui .opblock-tag .info__externaldocs,
+.swagger-ui .auth-wrapper,
+.swagger-ui .try-out,
+.opblock-body .right-side-wrapper .code-snippet {
   display: none !important;
 }
-`
-
-const slimModeStyles = `
-/* slim mode styles */
-.swagger-ui .opblock .opblock-summary-description {
-  display: none;
+/* fix copy button width */
+.swagger-ui .opblock .opblock-summary:hover .view-line-link.copy-to-clipboard {
+  width: 24px;
 }
-
-.swagger-ui .opblock-tag {
-  font-size: 16px;
-}
-
-.swagger-ui .opblock .opblock-summary .arrow {
-  margin-left: auto;
+.swagger-ui .copy-to-clipboard {
+  margin-left: 8px !important;
+  right: unset !important;
 }
 `
 
@@ -66,18 +63,10 @@ export class SwaggerUIElement extends HTMLElement {
   #relativeSidebar = false
 
   /**
-   * Should SwaggerUI show schemes, actions, etc
+   * Should SwaggerUI show information section, schemes, actions (Authorize/Try it out), etc
    * @type {boolean}
    */
   #essentialsOnly = false
-
-  /**
-   * TODO: remove this when we have an alternate view for card size in VueSpecRenderer component
-   * Slim styles for display in compressed places. Hides descriptions,
-   * decrease font size of headings
-   * @type {boolean}
-   */
-  #slimMode = false
 
   /**
    * SwaggerUI instance
@@ -117,9 +106,6 @@ export class SwaggerUIElement extends HTMLElement {
         break
       case 'essentials-only':
         this.essentialsOnly = newValue
-        break
-      case 'slim-mode':
-        this.slimMode = newValue
         break
     }
   }
@@ -166,14 +152,6 @@ export class SwaggerUIElement extends HTMLElement {
       const styleTag = document.createElement('style')
       styleTag.innerHTML = essentialsOnlyStyles
       styleTag.setAttribute('data-testid', 'hide-essentials-styles')
-      this.shadowRoot.appendChild(styleTag)
-    }
-
-    // add slim styles
-    if (this.#slimMode) {
-      const styleTag = document.createElement('style')
-      styleTag.innerHTML = slimModeStyles
-      styleTag.setAttribute('data-testid', 'slim-mode-styles')
       this.shadowRoot.appendChild(styleTag)
     }
 
@@ -230,14 +208,6 @@ export class SwaggerUIElement extends HTMLElement {
     this.#essentialsOnly = attributeValueToBoolean(essentialsOnly)
   }
 
-  get slimMode() {
-    return this.#slimMode
-  }
-
-  set slimMode(slimMode) {
-    this.#slimMode = attributeValueToBoolean(slimMode)
-  }
-
   get spec() {
     return this.#spec
   }
@@ -271,6 +241,6 @@ export class SwaggerUIElement extends HTMLElement {
   }
 
   static get observedAttributes() {
-    return ['url', 'spec', 'auto-init', 'has-sidebar', 'relative-sidebar', 'essentials-only', 'slim-mode']
+    return ['url', 'spec', 'auto-init', 'has-sidebar', 'relative-sidebar', 'essentials-only']
   }
 }
